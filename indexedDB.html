@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    <input id="name" type="text" placeholder="Db name" value="DB" />
+    <input type="number" id="version" placeholder="1.0" value="1" />
+    <button id="create">Create</button>
+
+    <hr />
+
+    <input type="text" id="note" placeholder="Your note" />
+    <button id="add">Add Note</button>
+
+<script>
+
+    let name = document.querySelector("#name");
+    let version = document.querySelector("#version");
+    let btn = document.querySelector("button#create");
+
+    let note = document.querySelector("#note");
+    let addBtn = document.querySelector("#add");
+
+    let db, v, dbAccess;
+
+
+    addBtn.addEventListener("click", function () {
+        let val = note.value;
+        if (!dbAccess) {
+          alert("Please open a database to add note");
+          return;
+        }
+
+        //creating transaction to read and write database
+        //DB => Notes
+        let tx = dbAccess.transaction("cs", "readwrite");
+        let csObjectStore = tx.objectStore("cs");
+        let data = {
+          nId: Date.now(),
+          noteValue: val,
+        };
+        csObjectStore.add(data);
+      });
+        
+        btn.addEventListener("click", function() {
+            db = name.value;
+            v = version.value;
+            let request = indexedDB.open(db,v); //database ko open krne ki request
+        
+            //Success event occured
+            request.addEventListener("success", function() {
+                alert("DB is created");
+                let dbAccess = request.result; //access to database needed
+                viewNotes();
+            })
+            
+            //upgrade event is called at the time of opening of db and upgrade
+            request.addEventListener("upgradeneeded", function () {
+                alert("upgrade occured");
+                //we can change the object store in upgrade event
+                let db = request.result;
+                // console.log(db);
+                db.createObjectStore("cs", { keyPath: "nId" });
+            });
+
+            //Error event
+            request.addEventListener("error", function() {
+                alert("Error occured");
+            });
+        });
+
+        function viewNotes() {
+            //code jb hum database open krre to cs ke object store se saare object console pr print
+            //assumption ki jb bhi function chlega mere paas dbAccess hoga
+            let  tx = dbAccess.transaction("cs" , "readonly");
+            let csObjectStore = tx.objectStore("cs");
+            let req = csObjectStore.openCursor();
+            
+            req.addEventListener("success" , function(){
+                let cursor = req.result; //cursor nikaal liya
+                if(cursor){
+                    console.log(cursor.value);
+                    cursor.continue();
+                }
+            })
+        }
+
+    </script>
+</body>
+</html>

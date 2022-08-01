@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0px;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas></canvas>
+
+    <script>
+
+        //Drawing a line 
+
+        // let ctx = canvas.getContext("2d");
+        // ctx.beginPath();
+        // ctx.moveTo(100,200);
+        // ctx.lineTo(300,400);
+        // ctx.strokeStyle = "blue";
+        // ctx.lineWidth = 15;
+        // ctx.stroke(); // ye zarori he drow krne ke liye(tbhi show hoga)
+        // //Hmme doosre line ko drow krne ke liye dobara beginPath krna hoga
+        // ctx.beginPath();
+        // ctx.moveTo(0,50);
+        // ctx.lineTo(400,500);
+        // ctx.strokeStyle = "red";
+        // ctx.lineWidth = 15;
+        // ctx.stroke(); 
+
+        //Drawing the rectangle
+
+        // ctx.strokeStyle = "blue";
+        // ctx.strokeRect(100,200,300,400);
+        // ctx.fillStyle = "red";
+        // ctx.fillRect(50,60,70,80);
+
+        //Creating an image
+
+        let canvas = document.querySelector("canvas");
+        canvas.height = window.innerHeight;
+        canvas.width = window.innerWidth;
+
+        //Creating a element img and adding the source
+        let img = document.createElement("img");
+        img.src = "img.jpeg";
+
+        let ctx = canvas.getContext("2d");
+
+        //Adding eventListener jn hmara image load ho jaaye isliye hmne load event lagaya he 
+        //ctx,drawImage(img, 0, 0) se left ke (0,0) se hmari image build kr dega
+        
+        img.addEventListener("load", function () {
+            ctx.drawImage(img, 0, 0);
+        });
+
+    </script>
+
+</body>
+</html>
